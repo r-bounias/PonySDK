@@ -35,7 +35,7 @@ public class SessionManager {
 
     private static final SessionManager INSTANCE = new SessionManager();
 
-    private final Map<String, Application> applicationsBySessionID = new ConcurrentHashMap<>();
+    private final Map<Integer, Application> applicationsBySessionID = new ConcurrentHashMap<>();
 
     private final List<ApplicationListener> listeners = new ArrayList<>();
 
@@ -52,12 +52,12 @@ public class SessionManager {
     }
 
     public void registerApplication(final Application application) {
-        applicationsBySessionID.put(application.getSession().getId(), application);
+        applicationsBySessionID.put(application.getID(), application);
         listeners.forEach(listener -> listener.onApplicationCreated(application));
     }
 
     public void unregisterApplication(final Application application) {
-        applicationsBySessionID.remove(application.getSession().getId());
+        applicationsBySessionID.remove(application.getID());
         listeners.forEach(listener -> listener.onApplicationDestroyed(application));
     }
 

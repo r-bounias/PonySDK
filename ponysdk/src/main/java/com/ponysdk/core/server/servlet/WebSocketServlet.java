@@ -87,14 +87,7 @@ public class WebSocketServlet extends org.eclipse.jetty.websocket.servlet.WebSoc
 
         factory.getPolicy().setIdleTimeout(maxIdleTime);
         factory.setCreator((request, response) -> {
-            // Force session creation if there is no session
-            request.getHttpServletRequest().getSession(true);
-            if (request.getSession() != null) {
-                return new WebSocket(request, response, monitor, buffers, applicationManager);
-            } else {
-                log.error("No HTTP session found");
-                return null;
-            }
+            return new WebSocket(request, response, monitor, buffers, applicationManager);
         });
     }
 
@@ -157,19 +150,17 @@ public class WebSocketServlet extends org.eclipse.jetty.websocket.servlet.WebSoc
         @Override
         public void onWebSocketConnect(final Session session) {
             if (log.isInfoEnabled())
-                log.info("WebSocket connected from {}, sessionID {}", session.getRemoteAddress(), request.getSession());
+                log.info("WebSocket connected from {}", session.getRemoteAddress());
 
             this.session = session;
             this.context = new TxnContext();
             this.context.setRequest(request);
             this.context.setSocket(this);
 
-            Application application = SessionManager.get().getApplication(request.getSession().getId());
-            if (application == null) {
-                application = new Application(request.getSession(), applicationManager.getOptions(),
-                        UserAgent.parseUserAgentString(request.getHeader("User-Agent")));
-                SessionManager.get().registerApplication(application);
-            }
+            final Application application = new Application(applicationManager.getOptions(),
+                    UserAgent.parseUserAgentString(request.getHeader("User-Agent")));
+
+            SessionManager.get().registerApplication(application);
 
             context.setApplication(application);
 
@@ -185,7 +176,6 @@ public class WebSocketServlet extends org.eclipse.jetty.websocket.servlet.WebSoc
                 socketBuffer.putInt(uiContext.getID());
                 flush(socketBuffer);
                 applicationManager.startApplication(context);
-
             } catch (final Exception e) {
                 log.error("Cannot process WebSocket instructions", e);
             }

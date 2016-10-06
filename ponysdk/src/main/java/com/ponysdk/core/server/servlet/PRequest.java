@@ -26,8 +26,6 @@ package com.ponysdk.core.server.servlet;
 import java.io.Reader;
 import java.io.StringReader;
 
-import javax.servlet.http.HttpSession;
-
 import org.eclipse.jetty.websocket.servlet.ServletUpgradeRequest;
 
 public class PRequest {
@@ -54,10 +52,6 @@ public class PRequest {
 
     public void setText(final String text) {
         reader = new StringReader(text);
-    }
-
-    public HttpSession getSession() {
-        return request.getSession();
     }
 
 }

@@ -118,6 +118,9 @@ public class PTWindow extends AbstractPTObject {
         final PTInstruction instruction = new PTInstruction(objectID);
         instruction.put(ClientToServerModel.HANDLER_OPEN);
         uiService.sendDataToServer(instruction);
+
+        //
+
     }
 
     public boolean isReady() {

@@ -26,8 +26,7 @@ package com.ponysdk.core.server.application;
 import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-
-import javax.servlet.http.HttpSession;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,12 +49,18 @@ public class Application {
 
     private final UserAgent userAgent;
 
-    private final HttpSession session;
+    private final int ID;
 
-    public Application(final HttpSession session, final ApplicationManagerOption options, final UserAgent userAgent) {
+    private static final AtomicInteger applicationCount = new AtomicInteger();
+
+    public Application(final ApplicationManagerOption options, final UserAgent userAgent) {
         this.options = options;
-        this.session = session;
         this.userAgent = userAgent;
+        this.ID = applicationCount.incrementAndGet();
+    }
+
+    public int getID() {
+        return ID;
     }
 
     public void registerUIContext(final UIContext uiContext) {
@@ -66,7 +71,6 @@ public class Application {
         uiContexts.remove(uiContextID);
         if (uiContexts.isEmpty()) {
             log.info("Invalidate session, all ui contexts have been destroyed");
-            session.invalidate();
             SessionManager.get().unregisterApplication(this);
         }
     }
@@ -74,7 +78,6 @@ public class Application {
     public void destroy() {
         uiContexts.values().forEach(context -> context.destroyFromApplication());
         uiContexts.clear();
-        session.invalidate();
         SessionManager.get().unregisterApplication(this);
     }
 
@@ -110,17 +113,13 @@ public class Application {
         return options;
     }
 
-    public HttpSession getSession() {
-        return session;
-    }
-
     public UserAgent getUserAgent() {
         return userAgent;
     }
 
     @Override
     public String toString() {
-        return "Application [options=" + options + ", userAgent=" + userAgent + ", session=" + session + "]";
+        return "Application [options=" + options + ", userAgent=" + userAgent + "]";
     }
 
 }

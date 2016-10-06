@@ -63,8 +63,6 @@ import com.ponysdk.core.ui.basic.PPasswordTextBox;
 import com.ponysdk.core.ui.basic.PPopupPanel;
 import com.ponysdk.core.ui.basic.PPushButton;
 import com.ponysdk.core.ui.basic.PRadioButton;
-import com.ponysdk.core.ui.basic.PRichTextArea;
-import com.ponysdk.core.ui.basic.PRichTextToolbar;
 import com.ponysdk.core.ui.basic.PScript;
 import com.ponysdk.core.ui.basic.PScrollPanel;
 import com.ponysdk.core.ui.basic.PSimpleLayoutPanel;
@@ -287,9 +285,6 @@ public class UISampleEntryPoint implements EntryPoint, UserLoggedOutHandler {
 
         boxContainer.add(new PRadioButton("RadioLabel"));
         boxContainer.add(new PRadioButton("RadioName", "RadioLabel"));
-        final PRichTextArea richTextArea = new PRichTextArea();
-        boxContainer.add(richTextArea);
-        boxContainer.add(new PRichTextToolbar(richTextArea));
         boxContainer.add(new PScrollPanel());
         boxContainer.add(new PSimpleLayoutPanel());
         boxContainer.add(new PSimplePanel());
